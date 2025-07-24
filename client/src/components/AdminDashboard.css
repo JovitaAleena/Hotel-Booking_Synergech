@@ -1,0 +1,22 @@
+.admin-dashboard-container {
+  max-width: 900px;
+  margin: 3rem auto;
+  background: #fff;
+  border-radius: 1rem;
+  box-shadow: 0 4px 24px rgba(0,0,0,0.08);
+  padding: 2rem 2.5rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.admin-dashboard-container h2 {
+  font-size: 2rem;
+  font-weight: 700;
+  margin-bottom: 1.5rem;
+}
+
+.admin-dashboard-container p {
+  font-size: 1.1rem;
+  color: #555;
+}
