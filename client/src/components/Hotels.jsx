@@ -3,13 +3,16 @@ import "./Hotels.css";
 import hotel1 from "../assets/exclusiveOfferCardImg1.png";
 import hotel2 from "../assets/exclusiveOfferCardImg2.png";
 import hotel3 from "../assets/exclusiveOfferCardImg3.png";
+import room1 from "../assets/roomImg1.png";
+import room2 from "../assets/roomImg2.png";
+import room3 from "../assets/roomImg3.png";
 
 const hotelsList = [
   {
     name: "The Orchid Hotel",
-    location: "Ashram Road, Ahmedabad",
+    location: "Ashram Road, Chennai",
     image: hotel1,
-    stars: 5,
+    stars: 4,
     price: 210,
     oldPrice: 250,
     offer: "16% Off!",
@@ -22,33 +25,78 @@ const hotelsList = [
   },
   {
     name: "Whistling Meadows Resort",
-    location: "SG Highway, Ahmedabad",
+    location: "SG Highway, Mumbai",
     image: hotel2,
-    stars: 4,
+    stars: 3,
     price: 675,
     oldPrice: 900,
     offer: "25% Off!",
     rating: 9.6,
-    review: "Excellent",
+    review: "Good",
     reviewCount: 1206,
     lastBooked: "9 hours ago",
     amenities: ["wifi", "pool", "gym", "restaurant", "bar", "parking", "ac"],
-    coupleFriendly: true,
+    coupleFriendly: false,
   },
   {
     name: "Radisson Blu Hotel",
-    location: "Electronic City, Ahmedabad",
+    location: "Electronic City, Kochi",
     image: hotel3,
     stars: 5,
     price: 280,
     oldPrice: 350,
     offer: "20% Off!",
     rating: 7.0,
-    review: "Good",
+    review: "Amazing Experience",
     reviewCount: 420,
     lastBooked: "2 days ago",
     amenities: ["wifi", "pool", "gym", "restaurant", "bar", "parking", "ac", "spa"],
     coupleFriendly: true,
+  },
+  {
+    name: "Lotus Heritage Palace",
+    location: "Heritage Road, Chennai",
+    image: room1,
+    stars: 4,
+    price: 350,
+    oldPrice: 400,
+    offer: "12% Off!",
+    rating: 8.8,
+    review: "Excellent",
+    reviewCount: 320,
+    lastBooked: "1 day ago",
+    amenities: ["wifi", "pool", "restaurant", "parking", "ac"],
+    coupleFriendly: false,
+  },
+  {
+    name: "Sunset Villa",
+    location: "Lakeview Road, Kolkata",
+    image: room2,
+    stars: 2,
+    price: 180,
+    oldPrice: 220,
+    offer: "18% Off!",
+    rating: 7.9,
+    review: "Not Bad",
+    reviewCount: 210,
+    lastBooked: "3 hours ago",
+    amenities: ["wifi", "pool", "restaurant", "bar", "parking"],
+    coupleFriendly: false,
+  },
+  {
+    name: "City Lights Hotel",
+    location: "Downtown, Hyderabad",
+    image: room3,
+    stars: 3,
+    price: 120,
+    oldPrice: 150,
+    offer: "10% Off!",
+    rating: 6.5,
+    review: "Average",
+    reviewCount: 110,
+    lastBooked: "5 hours ago",
+    amenities: ["wifi", "restaurant", "parking", "ac"],
+    coupleFriendly: false,
   },
 ];
 
@@ -61,7 +109,14 @@ const Hotels = () => {
         <div className="hotels-title">Hotels - List Page</div>
         <div className="hotels-breadcrumb">Home &gt; Hotels &gt; Hotels List Page</div>
         <form className="hotels-searchbar" onSubmit={e => e.preventDefault()}>
-          <input className="hotels-search-input" placeholder="Enter City/Hotel" />
+          <select className="hotels-search-input" defaultValue="">
+            <option value="" disabled hidden>Select City</option>
+            <option value="Chennai">Chennai</option>
+            <option value="Kochi">Kochi</option>
+            <option value="Hyderabad">Hyderabad</option>
+            <option value="Mumbai">Mumbai</option>
+            <option value="Kolkata">Kolkata</option>
+          </select>
           <input className="hotels-search-input" type="date" placeholder="Check In" />
           <input className="hotels-search-input" type="date" placeholder="Check Out" />
           <select className="hotels-search-input">
@@ -74,43 +129,9 @@ const Hotels = () => {
         </form>
       </div>
       <div className="hotels-main">
-        <aside className="hotels-filter">
-          <div className="filter-section">
-            <div className="filter-title">Hotel Name</div>
-            <input className="filter-input" placeholder="Search by Hotel Name" value={search} onChange={e => setSearch(e.target.value)} />
-          </div>
-          <div className="filter-section">
-            <div className="filter-title">Price</div>
-            <div className="filter-slider">$125 - $980</div>
-          </div>
-          <div className="filter-section">
-            <div className="filter-title">Property Types</div>
-            <div className="filter-checkboxes">
-              <label><input type="checkbox" /> Hotel</label>
-              <label><input type="checkbox" /> Resort</label>
-              <label><input type="checkbox" /> Villa</label>
-              <label><input type="checkbox" /> Heritage</label>
-              <label><input type="checkbox" /> Motel</label>
-              <label><input type="checkbox" /> Guest House</label>
-              <label><input type="checkbox" /> Farm House</label>
-              <label><input type="checkbox" /> Palace</label>
-              <label><input type="checkbox" /> Serviced Apartments</label>
-            </div>
-          </div>
-          <div className="filter-section">
-            <div className="filter-title">Star Category</div>
-            <div className="filter-checkboxes">
-              <label><input type="checkbox" /> 5 Star <span className="star">★★★★★</span></label>
-              <label><input type="checkbox" /> 4 Star <span className="star">★★★★</span></label>
-              <label><input type="checkbox" /> 3 Star <span className="star">★★★</span></label>
-              <label><input type="checkbox" /> 2 Star <span className="star">★★</span></label>
-              <label><input type="checkbox" /> 1 Star <span className="star">★</span></label>
-            </div>
-          </div>
-        </aside>
         <section className="hotels-list-section">
           <div className="hotels-list-header">
-            <div className="hotels-list-location">Ahmedabad: <b>860 Hotels found</b> <span className="hotels-list-note">Prices inclusive of taxes</span></div>
+            <div className="hotels-list-location"> <span className="hotels-list-note">Prices inclusive of taxes</span></div>
             <div className="hotels-list-sort">
               <label>Sort By: </label>
               <select>

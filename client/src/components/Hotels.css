@@ -5,12 +5,15 @@
   font-family: 'Inter', Arial, sans-serif;
 }
 .hotels-navbar {
-  background: #223a6a;
+  background: #161615;
   color: #fff;
   padding: 1.2rem 2.5rem 0.7rem 2.5rem;
   border-top-left-radius: 1.2rem;
   border-top-right-radius: 1.2rem;
-  position: relative;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.08);
 }
 .hotels-title {
   font-size: 1.5rem;
