@@ -1,0 +1,122 @@
+/* Experiences Page Styles */
+.experiences-page {
+  background: #f4f6fb;
+  min-height: 100vh;
+  padding: 3rem 0 4rem 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+  overflow: hidden;
+}
+/* Hyperspeed background animation */
+.hyperspeed-bg {
+  position: fixed;
+  top: 70px; /* Offset for navbar height */
+  left: 0;
+  width: 100vw;
+  height: calc(100vh - 70px);
+  min-height: calc(100vh - 70px);
+  z-index: 0;
+  pointer-events: none;
+}
+.hyperspeed-line {
+  position: absolute;
+  top: -60px;
+  width: 4px;
+  height: 140px;
+  background: linear-gradient(180deg, #6366f1 0%, #a5b4fc 60%, #fff 100%);
+  opacity: 0.38;
+  border-radius: 2px;
+  animation: hyperspeed-move 1.2s linear infinite;
+  box-shadow: 0 0 16px 2px #6366f144;
+}
+@keyframes hyperspeed-move {
+  0% { top: -60px; opacity: 0.38; }
+  80% { opacity: 0.38; }
+  100% { top: 100vh; opacity: 0; }
+}
+.experiences-title {
+  font-size: 2.7rem;
+  font-weight: 600;
+  margin-bottom: 1.1rem;
+  color: #23244a;
+  text-align: center;
+  position: relative;
+  z-index: 1;
+}
+.experiences-subtitle {
+  font-size: 1.15rem;
+  color: #64748b;
+  text-align: center;
+  margin-bottom: 2.5rem;
+  max-width: 700px;
+  position: relative;
+  z-index: 1;
+}
+.experiences-reviews {
+  display: flex;
+  gap: 2.5rem;
+  justify-content: center;
+  flex-wrap: wrap;
+  position: relative;
+  z-index: 1;
+}
+.experiences-card {
+  background: #fff;
+  border-radius: 1.2rem;
+  box-shadow: 0 4px 24px rgba(0,0,0,0.08);
+  padding: 2.2rem 2.1rem 2.1rem 2.1rem;
+  min-width: 340px;
+  max-width: 370px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  margin-bottom: 1.5rem;
+  position: relative;
+  z-index: 2;
+}
+.experiences-card-header {
+  display: flex;
+  align-items: center;
+  gap: 1.1rem;
+  margin-bottom: 0.7rem;
+}
+.experiences-infographics {
+  width: 32px;
+  height: 32px;
+  margin-left: auto;
+  background: #f8fafc;
+  border-radius: 0.7rem;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+  object-fit: contain;
+}
+.experiences-avatar {
+  width: 54px;
+  height: 54px;
+  border-radius: 50%;
+  object-fit: cover;
+  background: #e5e7eb;
+}
+.experiences-name {
+  font-size: 1.25rem;
+  font-weight: 500;
+  color: #23244a;
+}
+.experiences-rating {
+  margin-bottom: 0.7rem;
+}
+.star {
+  font-size: 1.35rem;
+  color: #d1d5db;
+  margin-right: 0.1rem;
+}
+.star.filled {
+  color: #fbbf24;
+}
+.experiences-text {
+  font-size: 1.08rem;
+  color: #23244a;
+  margin-top: 0.5rem;
+  line-height: 1.6;
+}
