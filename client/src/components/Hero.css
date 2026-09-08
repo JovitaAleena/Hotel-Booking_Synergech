@@ -8,11 +8,30 @@
   position: relative;
   width: 100%;
   min-height: 80vh;
-  background-size: cover;
-  background-position: center;
   display: flex;
   align-items: center;
   justify-content: center;
+  overflow: hidden;
+}
+
+.hero-background {
+  position: absolute;
+  inset: 0;
+  background-position: center;
+  background-size: cover;
+  animation: hero-image-enter 0.8s ease both;
+  transform: scale(1.02);
+}
+
+@keyframes hero-image-enter {
+  from {
+    opacity: 0.35;
+    transform: scale(1.06);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1.02);
+  }
 }
 
 .hero-overlay {
@@ -157,7 +176,66 @@
   color: #fff;
 }
 
+.hero-controls {
+  position: absolute;
+  z-index: 2;
+  right: 2rem;
+  bottom: 2rem;
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+}
+
+.hero-arrow,
+.hero-dot {
+  border: 0;
+  cursor: pointer;
+}
+
+.hero-arrow {
+  display: grid;
+  width: 2.4rem;
+  height: 2.4rem;
+  place-items: center;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.9);
+  color: #111827;
+  font-size: 1.2rem;
+  transition: background 0.2s, transform 0.2s;
+}
+
+.hero-arrow:hover {
+  background: #fff;
+  transform: translateY(-2px);
+}
+
+.hero-dots {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0 0.2rem;
+}
+
+.hero-dot {
+  width: 0.5rem;
+  height: 0.5rem;
+  padding: 0;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.58);
+  transition: background 0.2s, transform 0.2s;
+}
+
+.hero-dot.is-active {
+  background: #fff;
+  transform: scale(1.45);
+}
+
 @media (max-width: 800px) {
+  .hero-controls {
+    right: 1rem;
+    bottom: 1rem;
+  }
+
   .hero-searchbar {
     grid-template-columns: 1fr;
     grid-template-rows: repeat(5, auto);

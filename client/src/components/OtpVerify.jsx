@@ -19,7 +19,10 @@ const OtpVerify = () => {
     }
     setError("");
     // Simulate OTP verification success
-    login({ email });
+    if (!login({ email: email.trim().toLowerCase() })) {
+      setError("No account found for this email. Please sign up first.");
+      return;
+    }
     alert("OTP verified! Redirecting to Home page.");
     navigate("/");
   };

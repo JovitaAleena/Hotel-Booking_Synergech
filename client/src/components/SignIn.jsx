@@ -9,10 +9,12 @@ import facebookIcon from "../assets/facebookIcon.svg";
 
 const SignIn = () => {
   const navigate = useNavigate();
-  const { login } = useContext(AuthContext);
+  const { login, register } = useContext(AuthContext);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [showConstraints, setShowConstraints] = useState(false);
   const [error, setError] = useState("");
 
@@ -29,8 +31,12 @@ const SignIn = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
     setShowConstraints(false);
-    if (!email || !password) {
-      setError("Please enter email and password.");
+    if (!email || !password || !confirmPassword) {
+      setError("Please enter email, password, and confirm password.");
+      return;
+    }
+    if (password !== confirmPassword) {
+      setError("Passwords do not match.");
       return;
     }
     if (!isPasswordValid) {
@@ -39,14 +45,15 @@ const SignIn = () => {
       return;
     }
     setError("");
-    login({ email });
+    register(email);
+    login({ email: email.trim().toLowerCase() });
     alert("Account created! (Simulated)");
     navigate("/");
   };
 
   return (
     <div className="login-container">
-      <h2>Sign In</h2>
+      <h2>Sign Up</h2>
       <form onSubmit={handleSubmit} className="login-form">
         <input
           type="email"
@@ -75,6 +82,27 @@ const SignIn = () => {
             />
           </span>
         </div>
+        <div className="password-field">
+          <input
+            type={showConfirmPassword ? "text" : "password"}
+            placeholder="Confirm Password"
+            value={confirmPassword}
+            onChange={(e) => setConfirmPassword(e.target.value)}
+            autoComplete="new-password"
+          />
+          <span
+            className="password-toggle"
+            onClick={() => setShowConfirmPassword((value) => !value)}
+            style={{ cursor: "pointer" }}
+          >
+            <img
+              src={showConfirmPassword ? eyeOffIcon : eyeIcon}
+              alt={showConfirmPassword ? "Hide confirm password" : "Show confirm password"}
+              height={20}
+              width={20}
+            />
+          </span>
+        </div>
         {showConstraints && (
           <div className="password-constraints">
             {passwordConstraints.map((c) => (
@@ -87,7 +115,7 @@ const SignIn = () => {
             ))}
           </div>
         )}
-        <button type="submit">Sign In</button>
+        <button type="submit">Sign Up</button>
         {error && <div className="login-error">{error}</div>}
       </form>
       <div className="login-social">

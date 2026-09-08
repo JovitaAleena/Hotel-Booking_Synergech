@@ -10,6 +10,11 @@ const Navbar = () => {
   const { user, logout } = useContext(AuthContext);
   const navigate = useNavigate();
 
+  const handleLogout = () => {
+    logout();
+    navigate('/');
+  };
+
   return (
     <nav className="navbar-container sticky-navbar">
       <div className="navbar-left">
@@ -32,8 +37,8 @@ const Navbar = () => {
         <img src={searchIcon} alt="search" className="navbar-icon" />
         {!user ? (
           <>
-            <button onClick={() => navigate('/signin')} className="navbar-btn-login" style={{marginRight: '0.5rem'}}>Sign In</button>
-            <button onClick={() => navigate('/login')} className="navbar-btn-login">Login</button>
+            <button onClick={() => navigate('/login')} className="navbar-btn-login" style={{marginRight: '0.5rem'}}>Sign In</button>
+            <button onClick={() => navigate('/signin')} className="navbar-btn-login">Sign Up</button>
           </>
         ) : (
           <div className="navbar-profile">
@@ -41,7 +46,7 @@ const Navbar = () => {
               <img src={userIcon} alt="profile" className="navbar-icon" />
             </span>
             <span className="navbar-user-email">{user.email}</span>
-            <button onClick={logout} className="navbar-btn-login">Logout</button>
+            <button onClick={handleLogout} className="navbar-btn-login">Logout</button>
           </div>
         )}
       </div>

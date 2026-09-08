@@ -8,7 +8,7 @@ import eyeIcon from "../assets/eyeIcon.svg";
 import eyeOffIcon from "../assets/eyeOffIcon.svg";
 
 const Login = () => {
-  const { login } = useContext(AuthContext);
+  const { login, isRegistered } = useContext(AuthContext);
   const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -40,18 +40,25 @@ const Login = () => {
       setShowConstraints(true);
       return;
     }
-    login({ email });
+    if (!login({ email: email.trim().toLowerCase() })) {
+      setError("No account found for this email. Please sign up first.");
+      return;
+    }
     navigate("/");
   };
 
   const handleGoogleLogin = () => {
     // Dummy Google login
-    login({ email: "googleuser@gmail.com" });
+    if (!login({ email: "googleuser@gmail.com" })) {
+      setError("No account found for this email. Please sign up first.");
+    }
   };
 
   const handleFacebookLogin = () => {
     // Dummy Facebook login
-    login({ email: "facebookuser@gmail.com" });
+    if (!login({ email: "facebookuser@gmail.com" })) {
+      setError("No account found for this email. Please sign up first.");
+    }
   };
 
   return (
@@ -115,6 +122,10 @@ const Login = () => {
           onClick={async () => {
             if (!email) {
               setError('Please enter your email to receive OTP.');
+              return;
+            }
+            if (!isRegistered(email)) {
+              setError('No account found for this email. Please sign up first.');
               return;
             }
             setError("");

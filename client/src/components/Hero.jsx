@@ -1,17 +1,61 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import "./Hero.css";
 import heroImage from "../assets/heroImage.png";
+import exclusiveOfferCardImg1 from "../assets/exclusiveOfferCardImg1.png";
+import exclusiveOfferCardImg2 from "../assets/exclusiveOfferCardImg2.png";
+import exclusiveOfferCardImg3 from "../assets/exclusiveOfferCardImg3.png";
+import roomImg1 from "../assets/roomImg1.png";
+import roomImg2 from "../assets/roomImg2.png";
+import roomImg3 from "../assets/roomImg3.png";
+import roomImg4 from "../assets/roomImg4.png";
 import locationIcon from "../assets/locationIcon.svg";
 import calenderIcon from "../assets/calenderIcon.svg";
 import guestsIcon from "../assets/guestsIcon.svg";
 import searchIcon from "../assets/searchIcon.svg";
 
+const heroImages = [
+  heroImage,
+  exclusiveOfferCardImg1,
+  exclusiveOfferCardImg2,
+  exclusiveOfferCardImg3,
+  roomImg1,
+  roomImg2,
+  roomImg3,
+  roomImg4,
+];
+
 const Hero = () => {
+  const [currentSlide, setCurrentSlide] = useState(0);
+  const [isPaused, setIsPaused] = useState(false);
+
+  useEffect(() => {
+    if (isPaused) return undefined;
+
+    const intervalId = window.setInterval(() => {
+      setCurrentSlide((slide) => (slide + 1) % heroImages.length);
+    }, 5000);
+
+    return () => window.clearInterval(intervalId);
+  }, [isPaused]);
+
+  const showSlide = (slide) => {
+    setCurrentSlide((slide + heroImages.length) % heroImages.length);
+  };
+
   return (
     <div
       className="hero-section"
-      style={{ backgroundImage: `url(${heroImage})` }}
+      onMouseEnter={() => setIsPaused(true)}
+      onMouseLeave={() => setIsPaused(false)}
+      onFocus={() => setIsPaused(true)}
+      onBlur={() => setIsPaused(false)}
     >
+      <div
+        key={currentSlide}
+        className="hero-background"
+        style={{ backgroundImage: `url(${heroImages[currentSlide]})` }}
+        aria-hidden="true"
+      />
       <div className="hero-overlay"></div>
       <div className="hero-content">
         <span className="hero-label">The Ultimate Hotel Experience</span>
@@ -80,6 +124,36 @@ const Hero = () => {
             Search
           </button>
         </form>
+      </div>
+      <div className="hero-controls" aria-label="Hero image controls">
+        <button
+          className="hero-arrow"
+          type="button"
+          onClick={() => showSlide(currentSlide - 1)}
+          aria-label="Previous hero image"
+        >
+          &#8592;
+        </button>
+        <div className="hero-dots">
+          {heroImages.map((image, index) => (
+            <button
+              key={image}
+              className={`hero-dot ${index === currentSlide ? "is-active" : ""}`}
+              type="button"
+              onClick={() => showSlide(index)}
+              aria-label={`Show hero image ${index + 1}`}
+              aria-current={index === currentSlide ? "true" : undefined}
+            />
+          ))}
+        </div>
+        <button
+          className="hero-arrow"
+          type="button"
+          onClick={() => showSlide(currentSlide + 1)}
+          aria-label="Next hero image"
+        >
+          &#8594;
+        </button>
       </div>
     </div>
   );

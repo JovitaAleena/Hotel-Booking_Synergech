@@ -8,9 +8,30 @@ export const AuthProvider = ({ children }) => {
     return stored ? JSON.parse(stored) : null;
   });
 
+  const normalizeEmail = (email) => email.trim().toLowerCase();
+
+  const isRegistered = (email) => {
+    const registeredEmails = JSON.parse(localStorage.getItem('registeredEmails') || '[]');
+    return registeredEmails.includes(normalizeEmail(email));
+  };
+
+  const register = (email) => {
+    const normalizedEmail = normalizeEmail(email);
+    const registeredEmails = JSON.parse(localStorage.getItem('registeredEmails') || '[]');
+    if (!registeredEmails.includes(normalizedEmail)) {
+      localStorage.setItem(
+        'registeredEmails',
+        JSON.stringify([...registeredEmails, normalizedEmail])
+      );
+    }
+  };
+
   const login = (userData) => {
+    if (!isRegistered(userData.email)) return false;
+
     setUser(userData);
     localStorage.setItem('user', JSON.stringify(userData));
+    return true;
   };
   const logout = () => {
     setUser(null);
@@ -26,7 +47,7 @@ export const AuthProvider = ({ children }) => {
   }, []);
 
   return (
-    <AuthContext.Provider value={{ user, login, logout }}>
+    <AuthContext.Provider value={{ user, login, logout, register, isRegistered }}>
       {children}
     </AuthContext.Provider>
   );

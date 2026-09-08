@@ -12,15 +12,65 @@ const tabs = [
   { label: "Profile", key: "profile" },
 ];
 
+const createDefaultProfileDetails = (email = "") => ({
+  firstName: "",
+  middleName: "",
+  lastName: "",
+  nickname: "",
+  suffix: "",
+  birthday: "",
+  gender: "Female",
+  mobile: "",
+  phoneType: "Mobile",
+  email,
+  reminders: true,
+});
+
+const getBookingsStorageKey = (email = "") => `userBookings:${email.trim().toLowerCase() || "guest"}`;
+
 const Profile = () => {
   const { user } = useContext(AuthContext);
   const [activeTab, setActiveTab] = useState("reservation");
+  const [isProfileEditing, setIsProfileEditing] = useState(false);
+  const getProfileStorageKey = (email = user?.email) => `profileDetails:${email?.trim().toLowerCase() || "guest"}`;
+  const [profileDetails, setProfileDetails] = useState(() => {
+    const stored = localStorage.getItem(`profileDetails:${user?.email?.trim().toLowerCase() || "guest"}`);
+    return stored ? JSON.parse(stored) : createDefaultProfileDetails(user?.email || "");
+  });
   const navigate = useNavigate();
 
   const handleTabClick = (tab) => {
     setActiveTab(tab.key);
     if (tab.route) navigate(tab.route);
   };
+
+  const handleProfileChange = (event) => {
+    const { name, value, type, checked } = event.target;
+    setProfileDetails((details) => ({
+      ...details,
+      [name]: type === "checkbox" ? checked : value,
+    }));
+  };
+
+  const handleProfileSave = () => {
+    localStorage.setItem(getProfileStorageKey(), JSON.stringify(profileDetails));
+    setIsProfileEditing(false);
+  };
+
+  const handleProfileCancel = () => {
+    const stored = localStorage.getItem(getProfileStorageKey());
+    if (stored) setProfileDetails(JSON.parse(stored));
+    setIsProfileEditing(false);
+  };
+
+  useEffect(() => {
+    const stored = localStorage.getItem(getProfileStorageKey());
+    if (stored) {
+      setProfileDetails(JSON.parse(stored));
+    } else {
+      setProfileDetails(createDefaultProfileDetails(user?.email || ""));
+    }
+  }, [user?.email]);
 
 
 // Reservation data state for CRUD
@@ -48,7 +98,12 @@ const initialReservations = [
   },
 ];
 
-const [reservations, setReservations] = useState(initialReservations);
+const [reservations, setReservations] = useState(() => {
+  const storedReservations = localStorage.getItem("userReservations");
+  return storedReservations
+    ? [...initialReservations, ...JSON.parse(storedReservations)]
+    : initialReservations;
+});
 const [editIdx, setEditIdx] = useState(null);
 const [editData, setEditData] = useState({});
 const [showCreate, setShowCreate] = useState(false);
@@ -95,7 +150,7 @@ const initialBookings = [
   },
 ];
 const [bookings, setBookings] = useState(() => {
-  const stored = localStorage.getItem('userBookings');
+  const stored = localStorage.getItem(getBookingsStorageKey(user?.email || ""));
   return stored ? JSON.parse(stored) : initialBookings;
 });
 const [editBookingIdx, setEditBookingIdx] = useState(null);
@@ -117,22 +172,31 @@ const handleBookingDescChange = (e) => {
 const handleBookingSave = (idx) => {
   setBookings(bookings => {
     const updated = bookings.map((b, i) => i === idx ? { ...b, ...editBookingData } : b);
-    localStorage.setItem('userBookings', JSON.stringify(updated));
+    localStorage.setItem(getBookingsStorageKey(user?.email || ""), JSON.stringify(updated));
     return updated;
   });
   setEditBookingIdx(null);
 };
 // Persist bookings to localStorage on change
 useEffect(() => {
-  localStorage.setItem('userBookings', JSON.stringify(bookings));
-}, [bookings]);
+  localStorage.setItem(getBookingsStorageKey(user?.email || ""), JSON.stringify(bookings));
+}, [bookings, user?.email]);
+
+useEffect(() => {
+  const stored = localStorage.getItem(getBookingsStorageKey(user?.email || ""));
+  setBookings(stored ? JSON.parse(stored) : initialBookings);
+}, [user?.email]);
 const handleBookingCancel = () => {
   setEditBookingIdx(null);
 };
 
 // CRUD handlers
 const handleDelete = (idx) => {
-  setReservations(reservations => reservations.filter((_, i) => i !== idx));
+  setReservations(reservations => {
+    const updatedReservations = reservations.filter((_, i) => i !== idx);
+    localStorage.setItem("userReservations", JSON.stringify(updatedReservations.slice(initialReservations.length)));
+    return updatedReservations;
+  });
 };
 const handleEdit = (idx) => {
   setEditIdx(idx);
@@ -143,7 +207,11 @@ const handleEditChange = (e) => {
   setEditData(data => ({ ...data, [name]: value }));
 };
 const handleEditSave = (idx) => {
-  setReservations(reservations => reservations.map((r, i) => i === idx ? editData : r));
+  setReservations(reservations => {
+    const updatedReservations = reservations.map((r, i) => i === idx ? editData : r);
+    localStorage.setItem("userReservations", JSON.stringify(updatedReservations.slice(initialReservations.length)));
+    return updatedReservations;
+  });
   setEditIdx(null);
 };
 const handleEditCancel = () => {
@@ -155,7 +223,11 @@ const handleCreateChange = (e) => {
   setCreateData(data => ({ ...data, [name]: value }));
 };
 const handleCreateSave = () => {
-  setReservations(reservations => [createData, ...reservations]);
+  setReservations(reservations => {
+    const updatedReservations = [...reservations, createData];
+    localStorage.setItem("userReservations", JSON.stringify(updatedReservations.slice(initialReservations.length)));
+    return updatedReservations;
+  });
   setShowCreate(false);
   setCreateData({ hotel: "Urbanza Suites", checkIn: "", checkOut: "", status: "Paid", guests: 1 });
 };
@@ -244,7 +316,7 @@ return (
                 {reservations.map((row, idx) => (
                   <tr key={idx}>
                     <td style={{ display: 'flex', alignItems: 'center', gap: '0.7rem' }}>
-                      <img src={hotelImages[row.hotel]} alt={row.hotel} className="hotel-thumb" />
+                      <img src={row.image || hotelImages[row.hotel]} alt={row.hotel} className="hotel-thumb" />
                       {row.hotel}
                     </td>
                     {editIdx === idx ? (
@@ -369,7 +441,57 @@ return (
             <div className="crud-table-footer">{bookings.length} items</div>
           </div>
         )}
-        {activeTab === "profile" && <div>Profile content goes here.</div>}
+        {activeTab === "profile" && (
+          <div className="client-profile-workspace">
+            <section className="client-profile-header">
+              <div className="client-profile-identity">
+                <div className="client-profile-avatar"><img src={userIcon} alt="Profile" /></div>
+                <div>
+                  <h2>{profileDetails.firstName || user?.name || "Your profile"} {profileDetails.lastName}</h2>
+                  <p>{profileDetails.email || user?.email || "Add your email address"}</p>
+                  <span className="client-profile-badge">PERSONAL ACCOUNT</span>
+                </div>
+              </div>
+              {!isProfileEditing ? (
+                <button className="profile-edit-btn" type="button" onClick={() => setIsProfileEditing(true)}>Edit profile</button>
+              ) : (
+                <div className="profile-header-actions">
+                  <button className="profile-cancel-btn" type="button" onClick={handleProfileCancel}>Cancel</button>
+                  <button className="profile-save-btn" type="button" onClick={handleProfileSave}>Save changes</button>
+                </div>
+              )}
+            </section>
+
+            <div className="client-profile-tabs" role="tablist" aria-label="Profile sections">
+              <span className="client-profile-tab active" role="tab" aria-selected="true">Personal details</span>
+              <span className="client-profile-tab" role="tab" aria-selected="false">Contact details</span>
+              <span className="client-profile-tab" role="tab" aria-selected="false">Preferences</span>
+            </div>
+
+            <section className="profile-form-section">
+              <div className="profile-section-heading"><div><span>01</span><h3>Personal details</h3></div><p>Keep your identity information up to date.</p></div>
+              <div className="profile-form-grid">
+                <label>First name<input name="firstName" value={profileDetails.firstName} onChange={handleProfileChange} disabled={!isProfileEditing} placeholder="First name" /></label>
+                <label>Middle name<input name="middleName" value={profileDetails.middleName} onChange={handleProfileChange} disabled={!isProfileEditing} placeholder="Middle name" /></label>
+                <label>Last name<input name="lastName" value={profileDetails.lastName} onChange={handleProfileChange} disabled={!isProfileEditing} placeholder="Last name" /></label>
+                <label>Nickname<input name="nickname" value={profileDetails.nickname} onChange={handleProfileChange} disabled={!isProfileEditing} placeholder="Nickname" /></label>
+                <label>Suffix<select name="suffix" value={profileDetails.suffix} onChange={handleProfileChange} disabled={!isProfileEditing}><option value="">Select suffix</option><option value="Jr.">Jr.</option><option value="Sr.">Sr.</option><option value="II">II</option></select></label>
+                <label>Birthday<input name="birthday" type="date" value={profileDetails.birthday} onChange={handleProfileChange} disabled={!isProfileEditing} /></label>
+                <fieldset><legend>Gender</legend><div className="profile-radio-group"><label><input type="radio" name="gender" value="Male" checked={profileDetails.gender === "Male"} onChange={handleProfileChange} disabled={!isProfileEditing} /> Male</label><label><input type="radio" name="gender" value="Female" checked={profileDetails.gender === "Female"} onChange={handleProfileChange} disabled={!isProfileEditing} /> Female</label></div></fieldset>
+              </div>
+            </section>
+
+            <section className="profile-form-section">
+              <div className="profile-section-heading"><div><span>02</span><h3>Contact details</h3></div><p>How we can reach you about your stays.</p></div>
+              <div className="profile-form-grid profile-contact-grid">
+                <label>Mobile number<input name="mobile" value={profileDetails.mobile} onChange={handleProfileChange} disabled={!isProfileEditing} placeholder="Enter mobile number" /></label>
+                <label>Phone type<select name="phoneType" value={profileDetails.phoneType} onChange={handleProfileChange} disabled={!isProfileEditing}><option>Mobile</option><option>Work</option><option>Home</option></select></label>
+                <label className="profile-email-field">Email address<input name="email" type="email" value={profileDetails.email} onChange={handleProfileChange} disabled={!isProfileEditing} placeholder="Email address" /></label>
+              </div>
+              <label className="profile-reminder"><input name="reminders" type="checkbox" checked={profileDetails.reminders} onChange={handleProfileChange} disabled={!isProfileEditing} /><span><strong>Send email appointment reminders</strong><small>We will send booking updates and reminders to your email.</small></span></label>
+            </section>
+          </div>
+        )}
       </main>
     </div>
 );

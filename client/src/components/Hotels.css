@@ -26,6 +26,7 @@
 }
 
 .hotels-searchbar {
+  position: relative;
   display: flex;
   gap: 1.1rem;
   margin-top: 1.5rem;
@@ -60,6 +61,15 @@
 }
 .hotels-search-btn:hover {
   background: #1d4ed8;
+}
+.hotels-search-error {
+  position: absolute;
+  left: 1.5rem;
+  bottom: -1.5rem;
+  margin: 0;
+  color: #dc2626;
+  font-size: 0.78rem;
+  font-weight: 600;
 }
 .hotels-main {
   display: flex;
@@ -143,6 +153,14 @@
   display: flex;
   flex-direction: column;
   gap: 1.5rem;
+}
+.hotels-empty-state {
+  border: 1px dashed #cbd5e1;
+  border-radius: 1rem;
+  background: #fff;
+  color: #64748b;
+  padding: 3rem 1rem;
+  text-align: center;
 }
 .hotel-card {
   display: flex;
@@ -289,4 +307,101 @@
 }
 .hotel-card-bookbtn:hover {
   background: #1d4ed8;
+}
+
+.booking-modal-backdrop {
+  position: fixed;
+  z-index: 300;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  padding: 1rem;
+  background: rgba(15, 23, 42, 0.58);
+  backdrop-filter: blur(4px);
+}
+
+.booking-modal {
+  position: relative;
+  width: min(100%, 470px);
+  box-sizing: border-box;
+  border-radius: 1.2rem;
+  background: #fff;
+  box-shadow: 0 24px 70px rgba(15, 23, 42, 0.25);
+  padding: 2rem;
+  animation: booking-modal-enter 0.2s ease-out;
+}
+
+@keyframes booking-modal-enter {
+  from { opacity: 0; transform: translateY(12px) scale(0.98); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+.booking-modal-close {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  width: 2rem;
+  height: 2rem;
+  border: 0;
+  border-radius: 50%;
+  background: #f2f4f7;
+  color: #475467;
+  cursor: pointer;
+  font-size: 1.35rem;
+  line-height: 1;
+}
+
+.booking-modal-eyebrow {
+  margin: 0 0 0.45rem;
+  color: #2563eb;
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.booking-modal h2 { margin: 0; color: #172554; font-size: 1.55rem; }
+.booking-modal-subtitle { margin: 0.4rem 0 1.5rem; color: #667085; font-size: 0.9rem; }
+
+.booking-form {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1rem;
+  margin-top: 1.5rem;
+}
+
+.booking-form label { color: #344054; font-size: 0.78rem; font-weight: 800; }
+.booking-form input { display: block; width: 100%; box-sizing: border-box; margin-top: 0.4rem; border: 1px solid #d0d5dd; border-radius: 0.5rem; padding: 0.7rem; color: #101828; font: inherit; }
+.booking-form input:focus { border-color: #2563eb; outline: 3px solid rgba(37, 99, 235, 0.12); }
+.booking-guests-field { grid-column: 1 / -1; }
+.booking-form-error { grid-column: 1 / -1; margin: 0; color: #dc2626; font-size: 0.82rem; }
+
+.booking-confirm-btn {
+  grid-column: 1 / -1;
+  border: 0;
+  border-radius: 0.55rem;
+  background: #2563eb;
+  color: #fff;
+  cursor: pointer;
+  font-size: 0.95rem;
+  font-weight: 800;
+  padding: 0.8rem 1rem;
+}
+
+.booking-confirm-btn:hover { background: #1d4ed8; }
+.booking-confirm-btn:disabled { background: #93c5fd; cursor: wait; }
+.booking-confirmation { text-align: center; padding: 1rem 0 0.2rem; }
+.booking-confirmation-icon { display: grid; width: 3.5rem; height: 3.5rem; margin: 0 auto 1rem; place-items: center; border-radius: 50%; background: #dcfce7; color: #16a34a; font-size: 1.7rem; font-weight: 800; }
+.booking-confirmation h2 { margin-bottom: 0.65rem; }
+.booking-confirmation > p:not(.booking-modal-eyebrow) { color: #667085; font-size: 0.92rem; line-height: 1.5; }
+.booking-confirmation-summary { display: flex; justify-content: center; gap: 0.6rem; margin: 1.2rem 0; color: #344054; font-size: 0.8rem; font-weight: 700; }
+.booking-confirmation-summary span { border-radius: 999px; background: #f2f4f7; padding: 0.5rem 0.7rem; }
+.booking-confirmation-total { display: flex; align-items: center; justify-content: space-between; margin: 1rem 0 1.2rem; border-top: 1px solid #eaecf0; padding-top: 1rem; color: #667085; font-size: 0.9rem; }
+.booking-confirmation-total strong { color: #172554; font-size: 1.35rem; }
+.booking-confirmation .booking-confirm-btn { width: 100%; }
+
+@media (max-width: 600px) {
+  .booking-modal { padding: 1.5rem; }
+  .booking-form { grid-template-columns: 1fr; }
+  .booking-guests-field, .booking-form-error, .booking-confirm-btn { grid-column: auto; }
 }

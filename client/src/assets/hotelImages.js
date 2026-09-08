@@ -13,4 +13,8 @@ export const hotelImages = {
   'Sunset Villa': room1,
   'Mountain Retreat': room2,
   'City Lights Hotel': room3,
+  'The Orchid Hotel': hotel1,
+  'Whistling Meadows Resort': hotel2,
+  'Radisson Blu Hotel': hotel3,
+  'Lotus Heritage Palace': room1,
 };
